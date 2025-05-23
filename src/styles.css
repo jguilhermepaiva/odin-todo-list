@@ -1,112 +1,333 @@
-body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
-            color: #333;
+/* Estilos Globais e Variáveis CSS */
+:root {
+    --primary-color: #4a90e2; /* Azul principal */
+    --secondary-color: #f5f7fa; /* Fundo claro */
+    --text-color: #333;
+    --border-color: #d1d5db;
+    --completed-color: #7f8c8d; /* Cinza para tarefas completas */
+    --danger-color: #e74c3c; /* Vermelho para exclusão */
+    --success-color: #2ecc71; /* Verde para conclusão */
+    --hover-primary-color: #357abd;
+    --font-family: 'Arial', sans-serif;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+body {
+    font-family: var(--font-family);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha no topo para permitir scroll */
+    min-height: 100vh;
+    padding-top: 20px; /* Espaço no topo */
+}
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.app-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden; /* Para manter os cantos arredondados do conteúdo interno */
+    min-height: calc(100vh - 40px); /* Altura mínima considerando o padding do body */
+}
 
-        .input-group {
-            display: flex;
-            margin-bottom: 20px;
-        }
+/* Barra Lateral (Sidebar) para Projetos */
+.sidebar {
+    width: 280px;
+    background-color: #e9edf1; /* Um tom um pouco diferente para a sidebar */
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
 
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
-            font-size: 16px;
-        }
+.sidebar h1 {
+    font-size: 1.8em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
-        }
+#projectList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    flex-grow: 1; 
+    overflow-y: auto; 
+}
 
-        button#addTodoBtn {
-            padding: 12px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s ease-in-out;
-        }
+.project-item {
+    display: flex;                
+    justify-content: space-between;
+    align-items: center;           
+    padding: 12px 15px;            
+    margin-bottom: 8px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    border: 1px solid transparent; 
+    position: relative; 
+}
+.project-item .project-name {
+    flex-grow: 1;                 
+    margin-right: 8px;           
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.delete-project-item-btn {
+    background-color: transparent; 
+    border: none;                  
+    color: #777;                   
+    font-size: 20px;              
+    padding: 2px 4px;              
+    cursor: pointer;
+    line-height: 1;                
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease; 
+}
+.project-item:hover {
+    background-color: #dce4ec;
+}
 
-        button#addTodoBtn:hover {
-            background-color: #0056b3;
-        }
+.project-item.active-project {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border-color: var(--hover-primary-color);
+}
+.project-item:hover .delete-project-item-btn {
+    visibility: visible;
+    opacity: 1;
+}
 
-        ul#todoList {
-            list-style-type: none;
-            padding: 0;
-        }
+.delete-project-item-btn:hover {
+    color: var(--danger-color); 
+}
 
-        li.todo-item {
-            background-color: #f9f9f9;
-            padding: 12px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s ease-in-out;
-        }
+.project-item.active-project .delete-project-item-btn {
+    visibility: visible; 
+    color: var(--secondary-color);
+}
 
-        li.todo-item.completed span {
-            text-decoration: line-through;
-            color: #888;
-        }
+.project-item.active-project .delete-project-item-btn:hover {
+    color: #fff; 
+}
 
-        li.todo-item:hover {
-            background-color: #f1f1f1;
-        }
+.add-project-form {
+    margin-top: auto; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+}
 
-        .todo-actions button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-left: 8px;
-            padding: 5px;
-        }
 
-        .todo-actions button.toggle-btn {
-            color: #28a745;
-        }
+#newProjectInput {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
 
-        .todo-actions button.delete-btn {
-            color: #dc3545;
-        }
+/* Conteúdo Principal para Tarefas */
+.main-content {
+    flex-grow: 1;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+}
 
-        .todo-actions button:hover {
-            opacity: 0.7;
-        }
+.main-content header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
 
-        .empty-state {
-            text-align: center;
-            color: #777;
-            padding: 20px;
-            border: 1px dashed #ddd;
-            border-radius: 4px;
-        }
+.main-content header h1 {
+    font-size: 2em;
+    margin: 0 0 5px 0;
+    color: var(--text-color);
+}
+
+.main-content header h2 {
+    font-size: 1.2em;
+    color: #555;
+    font-weight: normal;
+    margin: 0;
+}
+
+#currentProjectName {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.add-todo-form {
+    display: flex;
+    margin-bottom: 25px;
+    gap: 10px;
+}
+
+#newTodoInput {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1em;
+}
+
+#todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto; /* Scroll para a lista de tarefas */
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.todo-item:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.todo-item span {
+    flex-grow: 1;
+    margin-right: 15px;
+    font-size: 1em;
+}
+
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: var(--completed-color);
+}
+
+.todo-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Estilo Geral para Botões */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex; /* Para alinhar ícones se houver */
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    transform: translateY(-1px); /* Pequeno efeito de elevação */
+}
+
+#addProjectBtn,
+#addTodoBtn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#addProjectBtn:hover,
+#addTodoBtn:hover {
+    background-color: var(--hover-primary-color);
+}
+
+.todo-actions .btn {
+    background-color: transparent;
+    font-size: 1.2em; /* Para ícones */
+    padding: 6px; /* Menor padding para botões de ação */
+    color: #555;
+}
+
+.todo-actions .btn:hover {
+    color: var(--text-color);
+}
+
+.todo-actions .toggle-btn.completed-icon { /* Se você adicionar uma classe para o ícone de concluído */
+    color: var(--success-color);
+}
+.todo-actions .toggle-btn:hover {
+    color: var(--success-color);
+}
+
+.todo-actions .delete-btn:hover {
+    color: var(--danger-color);
+}
+
+/* Estado Vazio */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+    font-style: italic;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        padding-top: 0;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: 40vh; /* Limita altura da sidebar em telas pequenas */
+        overflow-y: auto;
+    }
+    .sidebar h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    .add-project-form {
+        margin-top: 15px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+    .main-content header h1 {
+        font-size: 1.7em;
+    }
+    .main-content header h2 {
+        font-size: 1em;
+    }
+
+    .add-todo-form {
+        flex-direction: column;
+    }
+    #newTodoInput, .btn {
+        width: 100%;
+        box-sizing: border-box; /* Garante que padding não aumente a largura */
+    }
+    #addTodoBtn {
+        margin-top: 8px;
+    }
+}

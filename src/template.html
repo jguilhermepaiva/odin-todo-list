@@ -8,13 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>Minhas Tarefas</h1>
-        <div class="input-group">
-            <input type="text" id="newTodoInput" placeholder="O que precisa ser feito?">
-            <button id="addTodoBtn">Adicionar</button>
+        <div class="projects-container">
+    <h2>Projetos</h2>
+    <ul id="projectList">
+        </ul>
+    <div class="add-project-form">
+        <input type="text" id="newProjectInput" placeholder="Novo projeto">
+        <button id="addProjectBtn" class="btn">Criar Projeto</button>
+        </div>
+    </div>
+    
+    <div class="todos-container">
+        <h2>Tarefas do Projeto: <span id="currentProjectName"></span></h2>
+        <div class="add-todo-form">
+            <input type="text" id="newTodoInput" placeholder="Nova tarefa">
+            <button id="addTodoBtn" class="btn">Adicionar Tarefa</button>
         </div>
         <ul id="todoList">
-        </ul>
+            </ul>
+    </div>
     </div>
 </body>
 </html>
