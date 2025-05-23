@@ -1,3 +1,4 @@
+import './styles.css';
 const STORAGE_KEY = 'myDataKey';
 
 let appData = {
@@ -49,6 +50,7 @@ function carregarDados(){
 function salvarDados() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
 }
+
 function renderizarLista() {
     todoListUl.innerHTML = '';
 
