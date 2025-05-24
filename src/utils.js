@@ -1,86 +1,8 @@
-import './styles.css';
-const STORAGE_KEY = 'todoAppProjectsData';
-
-let appData = {
-    projects: [],
-    currentProjectId: null,
-}
-
-// Referências aos elementos do DOM
-const newTodoInput = document.getElementById('newTodoInput');
-const addTodoBtn = document.getElementById('addTodoBtn');
-const todoListUl = document.getElementById('todoList');
-
-const newProjectInput = document.getElementById('newProjectInput');
-const addProjectBtn = document.getElementById('addProjectBtn');
-const projectListUl = document.getElementById('projectList');
-const currentProjectNameSpan = document.getElementById('currentProjectName');
-
-// Botão global para deletar projeto (se você tiver um e quiser manter)
-// const globalDeleteProjectBtn = document.getElementById('deleteProjectBtn');
-
-class Tarefa {
-    constructor(id, texto, completada = false) {
-        this.id = id;
-        this.texto = texto;
-        this.completada = completada;
-    }
-
-    toggleCompletada() { // Corrigido o nome do método
-        this.completada = !this.completada;
-    }
-}
-class Projeto {
-    constructor(id, nome) {
-        this.id = id;
-        this.nome = nome;
-        this.todos = [];
-    }
-}
-
-
-function salvarDados() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-}
-
-function carregarDados() {
-    const dadosStorage = localStorage.getItem(STORAGE_KEY);
-
-    if (dadosStorage) {
-        try {
-            const dadosParsed = JSON.parse(dadosStorage);
-
-            if (dadosParsed && Array.isArray(dadosParsed.projects)) {
-                appData.projects = dadosParsed.projects.map(proj => {
-                    const novoProjeto = new Projeto(proj.id, proj.nome);
-                    novoProjeto.todos = proj.todos.map(tarefa =>
-                        new Tarefa(tarefa.id, tarefa.texto, tarefa.completada)
-                    );
-                    return novoProjeto;
-                });
-                appData.currentProjectId = dadosParsed.currentProjectId;
-            }
-        } catch (error) {
-            console.error('Erro ao carregar os dados do localStorage:', error);
-            appData.projects = []; 
-            appData.currentProjectId = null;
-        }
-    }
-
-    if (appData.projects.length === 0) {
-        const projetoPadrao = new Projeto(Date.now(), 'Geral');
-        appData.projects.push(projetoPadrao);
-        appData.currentProjectId = projetoPadrao.id;
-    } else if (!appData.currentProjectId && appData.projects.length > 0) {
-        appData.currentProjectId = appData.projects[0].id;
-    } else if (appData.currentProjectId && !appData.projects.find(p => p.id === appData.currentProjectId)) {
-        appData.currentProjectId = appData.projects.length > 0 ? appData.projects[0].id : null;
-    }
-    renderizarProjetos();
-    renderizarLista();
-    salvarDados();
-}
-
+import { Projeto } from './project.js';
+import { Tarefa } from './task.js';
+import { salvarDados } from './storage.js';
+import { projectListUl , todoListUl, newProjectInput, newTodoInput, currentProjectNameSpan } from './dom.js';
+import { appData } from './dom.js';
 
 function getProjetoAtual() {
     if (!appData.currentProjectId) return null;
@@ -270,27 +192,6 @@ function excluirProjeto(idProjeto) {
     }
 }
 
-
-const globalDeleteProjectBtn = document.getElementById('deleteProjectBtn');
-if (globalDeleteProjectBtn) {
-    globalDeleteProjectBtn.addEventListener('click', () => {
-        const projetoAtual = getProjetoAtual();
-        if (!projetoAtual) {
-            alert('Nenhum projeto selecionado para excluir.');
-            return;
-        }
-        if (appData.projects.length <= 1) {
-             alert('Não é possível excluir o último projeto.');
-             return;
-        }
-        const confirmacao = confirm(`Você tem certeza que deseja excluir o projeto "${projetoAtual.nome}" e todas as suas tarefas?`);
-        if (confirmacao) {
-            excluirProjeto(projetoAtual.id);
-        }
-    });
-}
-
-
 function excluirTarefa(idTarefa) {
     const projetoAtual = getProjetoAtual();
     if (!projetoAtual) {
@@ -303,28 +204,13 @@ function excluirTarefa(idTarefa) {
     renderizarLista();
 }
 
-// --- Adicionando Event Listeners ---
-
-if (addTodoBtn) {
-    addTodoBtn.addEventListener('click', adicionarTarefa);
-}
-if (newTodoInput) {
-    newTodoInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            adicionarTarefa();
-        }
-    });
-}
-
-if (addProjectBtn) {
-    addProjectBtn.addEventListener('click', adicionarProjeto);
-}
-if (newProjectInput) {
-    newProjectInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            adicionarProjeto();
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', carregarDados);
+export {
+    getProjetoAtual,
+    adicionarProjeto,
+    adicionarTarefa,
+    alternarEstadoTarefa,
+    excluirProjeto,
+    excluirTarefa,
+    renderizarProjetos,
+    renderizarLista
+};
