@@ -1,11 +1,9 @@
-import { adicionarTarefa, adicionarProjeto } from "./utils";
-import { carregarDados } from "./storage";
+import { adicionarTarefa, adicionarProjeto, renderizarProjetos, renderizarLista, getProjetoAtual, excluirProjeto } from "./utils.js";
+import { carregarDados, salvarDados, appData } from "./storage.js"; 
 import './styles.css';
 
-export let appData = {
-    projects: [],
-    currentProjectId: null,
-}
+export const newTodoDetailsInput = document.getElementById('newTodoDetailsInput');
+export const newTodoDateInput = document.getElementById('newTodoDateInput');
 export const newTodoInput = document.getElementById('newTodoInput');
 export const addTodoBtn = document.getElementById('addTodoBtn');
 export const todoListUl = document.getElementById('todoList');
@@ -60,4 +58,9 @@ if (newProjectInput) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', carregarDados);
+document.addEventListener('DOMContentLoaded', () =>{
+    carregarDados();
+    renderizarProjetos();
+    renderizarLista();
+    salvarDados();
+} );

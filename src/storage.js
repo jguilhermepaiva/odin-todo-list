@@ -1,16 +1,18 @@
 import { Projeto } from './project.js';
 import { Tarefa } from './task.js';
-import { renderizarProjetos, renderizarLista } from './utils.js';
-import { appData } from './dom.js';
 import './styles.css';
 
+export let appData = {
+    projects: [],
+    currentProjectId: null,
+}
 const STORAGE_KEY = 'todoAppProjectsData';
 
-function salvarDados() {
+export function salvarDados() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
 }
 
-function carregarDados() {
+export function carregarDados() {
     const dadosStorage = localStorage.getItem(STORAGE_KEY);
 
     if (dadosStorage) {
@@ -21,15 +23,24 @@ function carregarDados() {
                 appData.projects = dadosParsed.projects.map(proj => {
                     const novoProjeto = new Projeto(proj.id, proj.nome);
                     novoProjeto.todos = proj.todos.map(tarefa =>
-                        new Tarefa(tarefa.id, tarefa.texto, tarefa.completada)
+                        new Tarefa(
+                            tarefa.id,
+                            tarefa.texto,
+                            tarefa.details || '', 
+                            tarefa.dueDate || '',
+                            tarefa.completada
+                        )
                     );
                     return novoProjeto;
                 });
                 appData.currentProjectId = dadosParsed.currentProjectId;
+            } else {
+                appData.projects = [];
+                appData.currentProjectId = null;
             }
         } catch (error) {
             console.error('Erro ao carregar os dados do localStorage:', error);
-            appData.projects = []; 
+            appData.projects = [];
             appData.currentProjectId = null;
         }
     }
@@ -38,14 +49,8 @@ function carregarDados() {
         const projetoPadrao = new Projeto(Date.now(), 'Geral');
         appData.projects.push(projetoPadrao);
         appData.currentProjectId = projetoPadrao.id;
-    } else if (!appData.currentProjectId && appData.projects.length > 0) {
-        appData.currentProjectId = appData.projects[0].id;
-    } else if (appData.currentProjectId && !appData.projects.find(p => p.id === appData.currentProjectId)) {
-        appData.currentProjectId = appData.projects.length > 0 ? appData.projects[0].id : null;
-    }
-    renderizarProjetos();
-    renderizarLista();
-    salvarDados();
-}
 
-export { salvarDados, carregarDados };
+    } else if ((!appData.currentProjectId || !appData.projects.find(p => p.id === appData.currentProjectId)) && appData.projects.length > 0) {
+        appData.currentProjectId = appData.projects[0].id;
+    }
+}

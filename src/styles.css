@@ -1,16 +1,16 @@
-/* Estilos Globais e Variáveis CSS */
 :root {
-    --primary-color: #4a90e2; /* Azul principal */
-    --secondary-color: #f5f7fa; /* Fundo claro */
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f7fa;
     --text-color: #333;
     --border-color: #d1d5db;
-    --completed-color: #7f8c8d; /* Cinza para tarefas completas */
-    --danger-color: #e74c3c; /* Vermelho para exclusão */
-    --success-color: #2ecc71; /* Verde para conclusão */
+    --completed-color: #7f8c8d;
+    --danger-color: #e74c3c;
+    --success-color: #2ecc71;
     --hover-primary-color: #357abd;
     --font-family: 'Arial', sans-serif;
     --border-radius: 8px;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --input-background-color: #fff;
 }
 
 body {
@@ -22,9 +22,16 @@ body {
     line-height: 1.6;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alinha no topo para permitir scroll */
+    align-items: flex-start;
     min-height: 100vh;
-    padding-top: 20px; /* Espaço no topo */
+    padding-top: 20px;
+}
+
+.container{
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .app-container {
@@ -34,16 +41,22 @@ body {
     background-color: #fff;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    overflow: hidden; /* Para manter os cantos arredondados do conteúdo interno */
-    min-height: calc(100vh - 40px); /* Altura mínima considerando o padding do body */
+    overflow: hidden;
+    min-height: calc(100vh - 40px);
 }
 
-/* Barra Lateral (Sidebar) para Projetos */
 .sidebar {
     width: 280px;
-    background-color: #e9edf1; /* Um tom um pouco diferente para a sidebar */
+    background-color: #e9edf1;
     padding: 20px;
     border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px 30px;
     display: flex;
     flex-direction: column;
 }
@@ -53,96 +66,6 @@ body {
     color: var(--primary-color);
     margin-bottom: 20px;
     text-align: center;
-}
-
-#projectList {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 20px 0;
-    flex-grow: 1; 
-    overflow-y: auto; 
-}
-
-.project-item {
-    display: flex;                
-    justify-content: space-between;
-    align-items: center;           
-    padding: 12px 15px;            
-    margin-bottom: 8px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    font-weight: 500;
-    border: 1px solid transparent; 
-    position: relative; 
-}
-.project-item .project-name {
-    flex-grow: 1;                 
-    margin-right: 8px;           
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.delete-project-item-btn {
-    background-color: transparent; 
-    border: none;                  
-    color: #777;                   
-    font-size: 20px;              
-    padding: 2px 4px;              
-    cursor: pointer;
-    line-height: 1;                
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.2s ease, color 0.2s ease; 
-}
-.project-item:hover {
-    background-color: #dce4ec;
-}
-
-.project-item.active-project {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: bold;
-    border-color: var(--hover-primary-color);
-}
-.project-item:hover .delete-project-item-btn {
-    visibility: visible;
-    opacity: 1;
-}
-
-.delete-project-item-btn:hover {
-    color: var(--danger-color); 
-}
-
-.project-item.active-project .delete-project-item-btn {
-    visibility: visible; 
-    color: var(--secondary-color);
-}
-
-.project-item.active-project .delete-project-item-btn:hover {
-    color: #fff; 
-}
-
-.add-project-form {
-    margin-top: auto; 
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
-}
-
-
-#newProjectInput {
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-}
-
-/* Conteúdo Principal para Tarefas */
-.main-content {
-    flex-grow: 1;
-    padding: 20px 30px;
-    display: flex;
-    flex-direction: column;
 }
 
 .main-content header {
@@ -169,62 +92,6 @@ body {
     font-weight: bold;
 }
 
-.add-todo-form {
-    display: flex;
-    margin-bottom: 25px;
-    gap: 10px;
-}
-
-#newTodoInput {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 1em;
-}
-
-#todoList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-grow: 1;
-    overflow-y: auto; /* Scroll para a lista de tarefas */
-}
-
-.todo-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    margin-bottom: 10px;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.todo-item:hover {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-}
-
-.todo-item span {
-    flex-grow: 1;
-    margin-right: 15px;
-    font-size: 1em;
-}
-
-.todo-item.completed span {
-    text-decoration: line-through;
-    color: var(--completed-color);
-}
-
-.todo-actions {
-    display: flex;
-    gap: 8px;
-}
-
-/* Estilo Geral para Botões */
 .btn {
     padding: 10px 18px;
     border: none;
@@ -232,13 +99,13 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.2s ease, transform 0.1s ease;
-    display: inline-flex; /* Para alinhar ícones se houver */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 .btn:hover {
-    transform: translateY(-1px); /* Pequeno efeito de elevação */
+    transform: translateY(-1px);
 }
 
 #addProjectBtn,
@@ -252,29 +119,301 @@ body {
     background-color: var(--hover-primary-color);
 }
 
-.todo-actions .btn {
-    background-color: transparent;
-    font-size: 1.2em; /* Para ícones */
-    padding: 6px; /* Menor padding para botões de ação */
-    color: #555;
+.add-project-form {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
+.add-todo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+#newProjectInput,
+#newTodoInput,
+#newTodoDetailsInput,
+#newTodoDateInput {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: var(--input-background-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#newProjectInput:focus,
+#newTodoInput:focus,
+#newTodoDetailsInput:focus,
+#newTodoDateInput:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+#newTodoDetailsInput {
+    min-height: 60px;
+    resize: vertical;
+}
+
+#projectList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.project-item:hover {
+    background-color: #dce4ec;
+}
+
+.project-item.active-project {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border-color: var(--hover-primary-color);
+}
+
+.project-item .project-name {
+    flex-grow: 1;
+    margin-right: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.delete-project-item-btn {
+    background-color: transparent;
+    border: none;
+    color: #777;
+    font-size: 1.1em;
+    padding: 2px 4px;
+    cursor: pointer;
+    line-height: 1;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.project-item:hover .delete-project-item-btn {
+    visibility: visible;
+    opacity: 1;
+}
+
+.delete-project-item-btn:hover {
+    color: var(--danger-color);
+}
+
+.project-item.active-project .delete-project-item-btn {
+    visibility: visible;
+    opacity: 1;
+    color: var(--secondary-color);
+}
+
+.project-item.active-project .delete-project-item-btn:hover {
+    color: #fff;
+}
+
+#todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.todo-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.todo-item:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.todo-item-main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    box-sizing: border-box;
+}
+
+.todo-text-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-right: 15px;
+    overflow: hidden;
+}
+
+.todo-name {
+    font-weight: bold;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.todo-due-date {
+    font-size: 0.85em;
+    color: #555;
+    margin-top: 4px;
+}
+
+.todo-item.completed .todo-name,
+.todo-item.completed .todo-due-date {
+    text-decoration: line-through;
+    color: var(--completed-color);
+}
+
+.todo-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.todo-actions .btn {
+    background-color: transparent;
+    font-size: 1.2em;
+    padding: 6px;
+    color: #555;
+    border: none;
+}
 .todo-actions .btn:hover {
     color: var(--text-color);
 }
-
-.todo-actions .toggle-btn.completed-icon { /* Se você adicionar uma classe para o ícone de concluído */
-    color: var(--success-color);
+.todo-actions .expand-btn {
+    color: var(--primary-color);
+}
+.todo-actions .expand-btn:hover {
+    color: var(--hover-primary-color);
 }
 .todo-actions .toggle-btn:hover {
     color: var(--success-color);
 }
-
 .todo-actions .delete-btn:hover {
     color: var(--danger-color);
 }
 
-/* Estado Vazio */
+.todo-item.expanded {
+}
+
+.todo-details-edit-container {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 20px 20px 20px;
+    background-color: #fdfdfd;
+    border-top: 1px solid #e9e9e9;
+    border-radius: 0 0 calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px);
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.task-details-text {
+    margin-bottom: 20px;
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95em;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: var(--secondary-color);
+    padding: 12px;
+    border-radius: calc(var(--border-radius) - 4px);
+    border: 1px solid #eee;
+}
+.task-details-text strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.edit-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.edit-task-form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.edit-task-form input[type="text"],
+.edit-task-form textarea,
+.edit-task-form input[type="date"] {
+    margin-top: 5px;
+}
+
+.edit-task-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.edit-task-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.edit-task-form .btn {
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+.edit-task-form .save-edit-btn {
+    background-color: var(--success-color);
+    color: white;
+}
+.edit-task-form .save-edit-btn:hover {
+    background-color: #27ae60;
+}
+
+.edit-task-form .cancel-edit-btn {
+    background-color: #ccc;
+    color: var(--text-color);
+}
+.edit-task-form .cancel-edit-btn:hover {
+    background-color: #bbb;
+}
+
 .empty-state {
     text-align: center;
     padding: 30px;
@@ -285,7 +424,6 @@ body {
     margin-top: 20px;
 }
 
-/* Responsividade Básica */
 @media (max-width: 768px) {
     .app-container {
         flex-direction: column;
@@ -295,15 +433,19 @@ body {
         padding-top: 0;
     }
 
+    body {
+        padding-top: 0;
+    }
+
     .sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
-        max-height: 40vh; /* Limita altura da sidebar em telas pequenas */
+        max-height: 45vh;
         overflow-y: auto;
     }
     .sidebar h1 {
-        font-size: 1.5em;
+        font-size: 1.6em;
         margin-bottom: 15px;
     }
     .add-project-form {
@@ -311,23 +453,29 @@ body {
     }
 
     .main-content {
-        padding: 20px;
+        padding: 15px;
+        flex-grow: 1;
     }
     .main-content header h1 {
-        font-size: 1.7em;
+        font-size: 1.8em;
     }
     .main-content header h2 {
-        font-size: 1em;
+        font-size: 1.1em;
+    }
+    
+    #addTodoBtn {
+        width: 100%;
+        margin-top: 8px;
     }
 
-    .add-todo-form {
-        flex-direction: column;
+    .todo-item-main-content {
+        flex-wrap: wrap;
     }
-    #newTodoInput, .btn {
-        width: 100%;
-        box-sizing: border-box; /* Garante que padding não aumente a largura */
+    .todo-text-container {
+        min-width: 150px;
+        margin-bottom: 8px;
     }
-    #addTodoBtn {
-        margin-top: 8px;
+    .todo-actions {
+        margin-left: auto;
     }
 }

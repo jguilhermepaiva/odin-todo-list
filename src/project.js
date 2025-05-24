@@ -1,4 +1,4 @@
-class Projeto {
+export class Projeto {
     constructor(id, nome) {
         this.id = id;
         this.nome = nome;
@@ -6,4 +6,3 @@ class Projeto {
     }
 }
 
-export { Projeto };

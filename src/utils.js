@@ -1,8 +1,9 @@
 import { Projeto } from './project.js';
 import { Tarefa } from './task.js';
 import { salvarDados } from './storage.js';
-import { projectListUl , todoListUl, newProjectInput, newTodoInput, currentProjectNameSpan } from './dom.js';
-import { appData } from './dom.js';
+import { projectListUl , todoListUl, newProjectInput, newTodoInput, currentProjectNameSpan, newTodoDateInput, newTodoDetailsInput } from './dom.js';
+import { appData } from './storage.js';
+
 
 function getProjetoAtual() {
     if (!appData.currentProjectId) return null;
@@ -60,6 +61,11 @@ function renderizarProjetos() {
     });
 }
 
+
+
+
+
+
 function renderizarLista() {
     if (!todoListUl) {
         return;
@@ -70,8 +76,7 @@ function renderizarLista() {
     if (!projetoAtual) {
         const emptyStateLi = document.createElement('li');
         emptyStateLi.className = 'empty-state';
-        // Mensagem ajustada de acordo com o código original do usuário
-        emptyStateLi.textContent = 'Nenhum projeto encontrado.'; 
+        emptyStateLi.textContent = 'Nenhum projeto encontrado.';
         todoListUl.appendChild(emptyStateLi);
         return;
     }
@@ -79,7 +84,6 @@ function renderizarLista() {
     if (projetoAtual.todos.length === 0) {
         const emptyStateLi = document.createElement('li');
         emptyStateLi.className = 'empty-state';
-         // Mensagem ajustada de acordo com o código original do usuário
         emptyStateLi.textContent = 'Nenhuma tarefa encontrada.';
         todoListUl.appendChild(emptyStateLi);
         return;
@@ -93,11 +97,41 @@ function renderizarLista() {
         }
         li.dataset.id = tarefa.id;
 
+        const mainContentDiv = document.createElement('div');
+        mainContentDiv.className = 'todo-item-main-content';
+
+        const textoContainer = document.createElement('div');
+        textoContainer.className = 'todo-text-container';
+
         const spanTexto = document.createElement('span');
         spanTexto.textContent = tarefa.texto;
+        spanTexto.className = 'todo-name';
+        textoContainer.appendChild(spanTexto);
+
+        if (tarefa.dueDate) {
+            const spanDate = document.createElement('span');
+            try {
+                // Tenta formatar a data para um formato mais legível
+                const dateObj = new Date(tarefa.dueDate + 'T00:00:00'); // Adiciona T00:00:00 para evitar problemas de fuso horário na interpretação
+                spanDate.textContent = `Data: ${dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}`;
+            } catch (e) {
+                spanDate.textContent = `Data: ${tarefa.dueDate}`; // Fallback se a data não for válida
+            }
+            spanDate.className = 'todo-due-date';
+            textoContainer.appendChild(spanDate);
+        }
+        // Detalhes serão mostrados ao expandir (Fase 2)
+        mainContentDiv.appendChild(textoContainer);
 
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'todo-actions';
+
+        // Botão de expandir (será implementado na Fase 2)
+         const expandBtn = document.createElement('button');
+         expandBtn.className = 'btn expand-btn';
+         expandBtn.innerHTML = '&#x2193;'; 
+         expandBtn.title = 'Ver detalhes';
+         expandBtn.onclick = () => { toggleDetalhesTarefa(tarefa.id, li); };
 
         const toggleBtn = document.createElement('button');
         toggleBtn.className = 'btn toggle-btn';
@@ -111,13 +145,125 @@ function renderizarLista() {
         deleteBtn.title = 'Excluir tarefa';
         deleteBtn.onclick = () => { excluirTarefa(tarefa.id); };
 
+        actionsDiv.appendChild(expandBtn);
         actionsDiv.appendChild(toggleBtn);
         actionsDiv.appendChild(deleteBtn);
+        mainContentDiv.appendChild(actionsDiv);
 
-        li.appendChild(spanTexto);
-        li.appendChild(actionsDiv);
+        li.appendChild(mainContentDiv);
+
+        const detailsEditContainer = document.createElement('div');
+        detailsEditContainer.className = 'todo-details-edit-container';
+        detailsEditContainer.style.display = 'none'; // Oculto por padrão
+        li.appendChild(detailsEditContainer);
+
         todoListUl.appendChild(li);
     });
+}
+export function toggleDetalhesTarefa(tarefaId, listItemElement) {
+    const projetoAtual = getProjetoAtual();
+    if (!projetoAtual) return;
+    const tarefa = projetoAtual.todos.find(t => t.id === tarefaId);
+    if (!tarefa) return;
+
+    const detailsEditContainer = listItemElement.querySelector('.todo-details-edit-container');
+    const expandBtn = listItemElement.querySelector('.expand-btn');
+
+    if (detailsEditContainer.style.display === 'none' || detailsEditContainer.innerHTML === '') {
+        detailsEditContainer.innerHTML = '';
+
+        const detailsP = document.createElement('p');
+        detailsP.innerHTML = `<strong>Detalhes:</strong><br>${tarefa.details || 'Nenhum detalhe fornecido.'}`;
+        detailsP.className = 'task-details-text';
+
+        const editForm = document.createElement('form');
+        editForm.className = 'edit-task-form';
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            salvarEdicaoTarefa(
+                tarefa.id,
+                editForm.querySelector('.edit-task-name').value,
+                editForm.querySelector('.edit-task-details').value,
+                editForm.querySelector('.edit-task-dueDate').value,
+                listItemElement
+            );
+        });
+
+        const nameLabel = document.createElement('label');
+        nameLabel.textContent = 'Nome da Tarefa:';
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'edit-task-name';
+        nameInput.value = tarefa.texto;
+        nameLabel.appendChild(nameInput);
+
+        const detailsLabel = document.createElement('label');
+        detailsLabel.textContent = 'Detalhes:';
+        const detailsTextarea = document.createElement('textarea');
+        detailsTextarea.className = 'edit-task-details';
+        detailsTextarea.value = tarefa.details;
+        detailsLabel.appendChild(detailsTextarea);
+
+        const dueDateLabel = document.createElement('label');
+        dueDateLabel.textContent = 'Data de Vencimento:';
+        const dueDateInput = document.createElement('input');
+        dueDateInput.type = 'date';
+        dueDateInput.className = 'edit-task-dueDate';
+        dueDateInput.value = tarefa.dueDate;
+        dueDateLabel.appendChild(dueDateInput);
+
+        // Div para agrupar os botões de ação do formulário
+        const formActionsDiv = document.createElement('div');
+        formActionsDiv.className = 'form-actions'; // Classe para estilização CSS
+
+        const saveButton = document.createElement('button');
+        saveButton.type = 'submit';
+        saveButton.className = 'btn save-edit-btn';
+        saveButton.textContent = 'Salvar Alterações';
+
+        const cancelButton = document.createElement('button');
+        cancelButton.type = 'button';
+        cancelButton.className = 'btn cancel-edit-btn';
+        cancelButton.textContent = 'Cancelar';
+        cancelButton.onclick = () => {
+            toggleDetalhesTarefa(tarefa.id, listItemElement);
+        };
+
+        formActionsDiv.appendChild(saveButton);
+        formActionsDiv.appendChild(cancelButton);
+
+        editForm.appendChild(nameLabel);
+        editForm.appendChild(detailsLabel);
+        editForm.appendChild(dueDateLabel);
+        editForm.appendChild(formActionsDiv); // Adiciona o div com os botões
+
+        detailsEditContainer.appendChild(detailsP);
+        detailsEditContainer.appendChild(editForm);
+
+        detailsEditContainer.style.display = 'block';
+        if (expandBtn) expandBtn.innerHTML = '&#x2191;';
+        listItemElement.classList.add('expanded');
+
+    } else {
+        detailsEditContainer.style.display = 'none';
+        detailsEditContainer.innerHTML = '';
+        if (expandBtn) expandBtn.innerHTML = '&#x2193;';
+        listItemElement.classList.remove('expanded');
+    }
+}
+
+function salvarEdicaoTarefa(tarefaId, novoTexto, novosDetalhes, novaData, listItemElement) {
+    const projetoAtual = getProjetoAtual();
+    if (!projetoAtual) return;
+    const tarefa = projetoAtual.todos.find(t => t.id === tarefaId);
+
+    if (tarefa) {
+        tarefa.texto = novoTexto.trim();
+        tarefa.details = novosDetalhes.trim();
+        tarefa.dueDate = novaData;
+        salvarDados();
+        renderizarLista(); 
+    }
 }
 
 function adicionarProjeto() {
@@ -136,23 +282,29 @@ function adicionarProjeto() {
 }
 
 function adicionarTarefa() {
+    // Assegure-se que newTodoInput, newTodoDetailsInput e newTodoDateInput 
+    // estão sendo exportados de dom.js e importados aqui.
     const texto = newTodoInput.value.trim();
+    const details = newTodoDetailsInput ? newTodoDetailsInput.value.trim() : '';
+    const dueDate = newTodoDateInput ? newTodoDateInput.value : '';
+
     const projetoAtual = getProjetoAtual();
 
     if (!projetoAtual) {
-        // Mensagem ajustada de acordo com o código original do usuário
-        alert('Nenhum projeto encontrado.'); 
+        alert('Nenhum projeto encontrado.');
         return;
     }
 
     if (texto === '') {
-        alert('Por favor, insira uma tarefa.');
+        alert('Por favor, insira um nome para a tarefa.');
         return;
     }
 
-    const novaTarefa = new Tarefa(Date.now(), texto);
+    const novaTarefa = new Tarefa(Date.now(), texto, details, dueDate);
     projetoAtual.todos.push(novaTarefa);
     newTodoInput.value = '';
+    if (newTodoDetailsInput) newTodoDetailsInput.value = '';
+    if (newTodoDateInput) newTodoDateInput.value = '';
     salvarDados();
     renderizarLista();
 }

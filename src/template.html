@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo List</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="projects-container">
-    <h2>Projetos</h2>
-    <ul id="projectList">
-        </ul>
-    <div class="add-project-form">
-        <input type="text" id="newProjectInput" placeholder="Novo projeto">
-        <button id="addProjectBtn" class="btn">Criar Projeto</button>
+      <div class="projects-container">
+        <h2>Projetos</h2>
+        <ul id="projectList"></ul>
+        <div class="add-project-form">
+          <input type="text" id="newProjectInput" placeholder="Novo projeto" />
+          <button id="addProjectBtn" class="btn">Criar Projeto</button>
         </div>
-    </div>
-    
-    <div class="todos-container">
+      </div>
+
+      <div class="todos-container">
         <h2>Tarefas do Projeto: <span id="currentProjectName"></span></h2>
         <div class="add-todo-form">
-            <input type="text" id="newTodoInput" placeholder="Nova tarefa">
-            <button id="addTodoBtn" class="btn">Adicionar Tarefa</button>
+          <input type="text" id="newTodoInput" placeholder="Nome da tarefa" />
+          <textarea id="newTodoDetailsInput" placeholder="Detalhes da tarefa..."></textarea>
+          <input type="date" id="newTodoDateInput" />
+          <button id="addTodoBtn" class="btn">Adicionar Tarefa</button>
         </div>
-        <ul id="todoList">
-        </ul>
+        <ul id="todoList"></ul>
+      </div>
     </div>
-    </div>
-</body>
+  </body>
 </html>

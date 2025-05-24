@@ -1,13 +1,13 @@
-class Tarefa {
-    constructor(id, texto, completada = false) {
+export class Tarefa {
+    constructor(id, texto, details = '', dueDate = '', completada = false) {
         this.id = id;
-        this.texto = texto;
+        this.texto = texto; 
+        this.details = details; 
+        this.dueDate = dueDate;   
         this.completada = completada;
     }
 
-    toggleCompletada() { // Corrigido o nome do método
+    toggleCompletada() {
         this.completada = !this.completada;
     }
 }
-
-export { Tarefa };
